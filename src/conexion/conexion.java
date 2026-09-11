@@ -2,22 +2,52 @@ package conexion;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class Conexion {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/LRBoutiqueCeleste";
+    private static final String URL =
+            "jdbc:mysql://localhost:3306/lrboutiquecelesthe?useSSL=false&serverTimezone=UTC";
+
     private static final String USUARIO = "root";
-    private static final String PASSWORD = "";
+
+    private static final String CONTRASENA = "";
 
     public static Connection conectar() {
+
         try {
-            Connection conexion = DriverManager.getConnection(URL, USUARIO, PASSWORD);
-            System.out.println("Conexion exitosa a LRBoutiqueCeleste");
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection conexion = DriverManager.getConnection(
+                    URL,
+                    USUARIO,
+                    CONTRASENA
+            );
+
+            System.out.println(
+                    "CONEXION EXITOSA A: " + conexion.getCatalog()
+            );
+
             return conexion;
 
+        } catch (ClassNotFoundException e) {
+
+            throw new RuntimeException(
+                    "NO SE ENCONTRO EL DRIVER MYSQL: " + e.getMessage(), e
+            );
+
+        } catch (SQLException e) {
+
+            throw new RuntimeException(
+                    "ERROR MYSQL: " + e.getMessage(), e
+            );
+
         } catch (Exception e) {
-            System.out.println("Error de conexion: " + e.getMessage());
-            return null;
+
+            throw new RuntimeException(
+                    "ERROR GENERAL DE CONEXION: " + e.getMessage(), e
+            );
         }
     }
 }

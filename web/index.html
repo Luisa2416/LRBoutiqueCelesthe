@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>LR Boutique Celesthe</title>
+
+    <style>
+        /* Estilos generales de la página */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f7f3f5;
+            color: #333;
+        }
+
+        /* Encabezado principal */
+        header {
+            background-color: #6d3f58;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        header p {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        /* Barra de navegación */
+        nav {
+            background-color: #ffffff;
+            text-align: center;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        nav a {
+            color: #6d3f58;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 15px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* Contenedor principal */
+        main {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Tarjeta del formulario */
+        section {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        section h2 {
+            color: #6d3f58;
+            text-align: center;
+            margin-top: 0;
+        }
+
+        /* Organización de los campos */
+        .campo {
+            margin-bottom: 20px;
+        }
+
+        .campo label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        .campo input {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .campo input:focus {
+            outline: none;
+            border-color: #6d3f58;
+        }
+
+        /* Botón principal */
+        button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 6px;
+            background-color: #6d3f58;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #522f43;
+        }
+
+        /* Pie de página */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Adaptación para dispositivos móviles */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 25px;
+            }
+
+            nav a {
+                display: block;
+                margin: 10px;
+            }
+
+            main {
+                margin-top: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Encabezado de la aplicación -->
+    <header>
+        <h1>LR Boutique Celesthe</h1>
+        <p>Gestión de productos y pedidos</p>
+    </header>
+
+    <!-- Menú principal -->
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="producto">Productos</a>
+        <a href="pedido">Pedidos</a>
+    </nav>
+
+    <main>
+
+        <!-- Componente front-end para el registro de productos -->
+        <section>
+            <h2>Registrar producto</h2>
+
+            <!--
+                El formulario utiliza el método POST para enviar
+                la información al servlet encargado de productos.
+            -->
+            <form action="producto" method="post">
+
+                <div class="campo">
+                    <label for="nombre">Nombre del producto:</label>
+
+                    <input
+                        type="text"
+                        id="nombre"
+                        name="nombre"
+                        required
+                        maxlength="100"
+                        placeholder="Ejemplo: Blusa"
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="precio">Precio:</label>
+
+                    <input
+                        type="number"
+                        id="precio"
+                        name="precio"
+                        min="0"
+                        required
+                        placeholder="Ejemplo: 50000"
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="cantidad">Cantidad:</label>
+
+                    <input
+                        type="number"
+                        id="cantidad"
+                        name="cantidad"
+                        min="0"
+                        required
+                        placeholder="Ejemplo: 10"
+                    >
+                </div>
+
+                <!-- Botón para enviar el formulario -->
+                <button type="submit">
+                    Registrar producto
+                </button>
+
+            </form>
+        </section>
+
+    </main>
+
+    <!-- Pie de página -->
+    <footer>
+        <p>&copy; 2026 LR Boutique Celesthe</p>
+    </footer>
+
+</body>
+
+</html>

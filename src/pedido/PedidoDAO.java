@@ -4,98 +4,64 @@ import conexion.Conexion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PedidoDAO {
 
-    public void insertarPedido(int idUsuario, String fecha, String estado) {
-        String sql = "INSERT INTO pedido (id_usuario, fecha, estado) VALUES (?, ?, ?)";
+    // Registrar un pedido
+    public boolean insertar(Pedido pedido) {
 
-        try {
-            Connection conexion = Conexion.conectar();
-            PreparedStatement sentencia = conexion.prepareStatement(sql);
+        String sql = "INSERT INTO lrboutiquecelesthe.pedido "
+                   + "(id_usuario, fecha, estado) "
+                   + "VALUES (?, ?, ?)";
 
-            sentencia.setInt(1, idUsuario);
-            sentencia.setString(2, fecha);
-            sentencia.setString(3, estado);
+        try (Connection conexion = Conexion.conectar();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
 
-            sentencia.executeUpdate();
+            ps.setInt(1, pedido.getIdUsuario());
+            ps.setString(2, pedido.getFecha());
+            ps.setString(3, pedido.getEstado());
 
-            System.out.println("Pedido insertado correctamente.");
-
-            sentencia.close();
-            conexion.close();
+            return ps.executeUpdate() > 0;
 
         } catch (Exception e) {
-            System.out.println("Error al insertar pedido: " + e.getMessage());
+            throw new RuntimeException(
+                "Error al registrar el pedido: " + e.getMessage(), e
+            );
         }
     }
 
-    public void consultarPedidos() {
-        String sql = "SELECT * FROM pedido";
+    // Consultar todos los pedidos
+    public List<Pedido> listar() {
 
-        try {
-            Connection conexion = Conexion.conectar();
-            PreparedStatement sentencia = conexion.prepareStatement(sql);
-            ResultSet resultado = sentencia.executeQuery();
+        List<Pedido> pedidos = new ArrayList<>();
 
-            while (resultado.next()) {
-                System.out.println(
-                    "ID: " + resultado.getInt("id_pedido") +
-                    " | Usuario: " + resultado.getInt("id_usuario") +
-                    " | Fecha: " + resultado.getString("fecha") +
-                    " | Estado: " + resultado.getString("estado")
+        String sql = "SELECT id_pedido, id_usuario, fecha, estado "
+                   + "FROM lrboutiquecelesthe.pedido";
+
+        try (Connection conexion = Conexion.conectar();
+             PreparedStatement ps = conexion.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+
+                Pedido pedido = new Pedido(
+                    rs.getInt("id_pedido"),
+                    rs.getInt("id_usuario"),
+                    rs.getString("fecha"),
+                    rs.getString("estado")
                 );
+
+                pedidos.add(pedido);
             }
 
-            resultado.close();
-            sentencia.close();
-            conexion.close();
-
         } catch (Exception e) {
-            System.out.println("Error al consultar pedidos: " + e.getMessage());
+            throw new RuntimeException(
+                "Error al consultar los pedidos: " + e.getMessage(), e
+            );
         }
-    }
 
-    public void actualizarPedido(int idPedido, String estado) {
-        String sql = "UPDATE pedido SET estado = ? WHERE id_pedido = ?";
-
-        try {
-            Connection conexion = Conexion.conectar();
-            PreparedStatement sentencia = conexion.prepareStatement(sql);
-
-            sentencia.setString(1, estado);
-            sentencia.setInt(2, idPedido);
-
-            sentencia.executeUpdate();
-
-            System.out.println("Pedido actualizado correctamente.");
-
-            sentencia.close();
-            conexion.close();
-
-        } catch (Exception e) {
-            System.out.println("Error al actualizar pedido: " + e.getMessage());
-        }
-    }
-
-    public void eliminarPedido(int idPedido) {
-        String sql = "DELETE FROM pedido WHERE id_pedido = ?";
-
-        try {
-            Connection conexion = Conexion.conectar();
-            PreparedStatement sentencia = conexion.prepareStatement(sql);
-
-            sentencia.setInt(1, idPedido);
-
-            sentencia.executeUpdate();
-
-            System.out.println("Pedido eliminado correctamente.");
-
-            sentencia.close();
-            conexion.close();
-
-        } catch (Exception e) {
-            System.out.println("Error al eliminar pedido: " + e.getMessage());
-        }
+        return pedidos;
     }
 }

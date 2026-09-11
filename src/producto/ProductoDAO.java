@@ -4,102 +4,101 @@ import conexion.Conexion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductoDAO {
 
-    public void insertarProducto(String nombre, String descripcion, double precio, int stock) {
-        String sql = "INSERT INTO producto (nombre, descripcion, precio, stock) VALUES (?, ?, ?, ?)";
+    public boolean insertar(Producto producto) {
+
+        String sql = "INSERT INTO producto "
+                   + "(nombre, descripcion, precio, stock) "
+                   + "VALUES (?, ?, ?, ?)";
+
+        Connection conexion = null;
 
         try {
-            Connection conexion = Conexion.conectar();
-            PreparedStatement sentencia = conexion.prepareStatement(sql);
 
-            sentencia.setString(1, nombre);
-            sentencia.setString(2, descripcion);
-            sentencia.setDouble(3, precio);
-            sentencia.setInt(4, stock);
+            conexion = Conexion.conectar();
 
-            sentencia.executeUpdate();
-
-            System.out.println("Producto insertado correctamente.");
-
-            sentencia.close();
-            conexion.close();
-
-        } catch (Exception e) {
-            System.out.println("Error al insertar producto: " + e.getMessage());
-        }
-    }
-
-    public void consultarProductos() {
-        String sql = "SELECT * FROM producto";
-
-        try {
-            Connection conexion = Conexion.conectar();
-            conexion.createStatement().execute("SET NAMES utf8mb4");
-            PreparedStatement sentencia = conexion.prepareStatement(sql);
-            ResultSet resultado = sentencia.executeQuery();
-
-            while (resultado.next()) {
-                System.out.println(
-                    "ID: " + resultado.getInt("id_producto") +
-                    " | Nombre: " + resultado.getString("nombre") +
-                    " | Descripcion: " + resultado.getString("descripcion") +
-                    " | Precio: " + resultado.getDouble("precio") +
-                    " | Stock: " + resultado.getInt("stock")
+            if (conexion == null) {
+                throw new RuntimeException(
+                    "No se pudo conectar a la base de datos lrboutiquecelesthe."
                 );
             }
 
-            resultado.close();
-            sentencia.close();
-            conexion.close();
+            try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+                ps.setString(1, producto.getNombre());
+                ps.setString(2, producto.getDescripcion());
+                ps.setDouble(3, producto.getPrecio());
+                ps.setInt(4, producto.getStock());
+
+                int resultado = ps.executeUpdate();
+
+                System.out.println("Filas insertadas: " + resultado);
+
+                return resultado > 0;
+            }
 
         } catch (Exception e) {
-            System.out.println("Error al consultar productos: " + e.getMessage());
+
+            throw new RuntimeException(
+                "Error al insertar producto: " + e.getMessage(), e
+            );
+
+        } finally {
+
+            if (conexion != null) {
+                try {
+                    conexion.close();
+                } catch (Exception e) {
+                    System.out.println(
+                        "Error al cerrar conexión: " + e.getMessage()
+                    );
+                }
+            }
         }
     }
 
-    public void actualizarProducto(int idProducto, double precio, int stock) {
-        String sql = "UPDATE producto SET precio = ?, stock = ? WHERE id_producto = ?";
+    public List<Producto> listar() {
 
-        try {
-            Connection conexion = Conexion.conectar();
-            PreparedStatement sentencia = conexion.prepareStatement(sql);
+        List<Producto> productos = new ArrayList<>();
 
-            sentencia.setDouble(1, precio);
-            sentencia.setInt(2, stock);
-            sentencia.setInt(3, idProducto);
+        String sql = "SELECT * FROM producto";
 
-            sentencia.executeUpdate();
+        try (Connection conexion = Conexion.conectar()) {
 
-            System.out.println("Producto actualizado correctamente.");
+            if (conexion == null) {
+                throw new RuntimeException(
+                    "No se pudo conectar a la base de datos lrboutiquecelesthe."
+                );
+            }
 
-            sentencia.close();
-            conexion.close();
+            try (PreparedStatement ps = conexion.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
 
-        } catch (Exception e) {
-            System.out.println("Error al actualizar producto: " + e.getMessage());
-        }
-    }
+                while (rs.next()) {
 
-    public void eliminarProducto(int idProducto) {
-        String sql = "DELETE FROM producto WHERE id_producto = ?";
+                    Producto producto = new Producto(
+                        rs.getInt("id_producto"),
+                        rs.getString("nombre"),
+                        rs.getString("descripcion"),
+                        rs.getDouble("precio"),
+                        rs.getInt("stock")
+                    );
 
-        try {
-            Connection conexion = Conexion.conectar();
-            PreparedStatement sentencia = conexion.prepareStatement(sql);
-
-            sentencia.setInt(1, idProducto);
-
-            sentencia.executeUpdate();
-
-            System.out.println("Producto eliminado correctamente.");
-
-            sentencia.close();
-            conexion.close();
+                    productos.add(producto);
+                }
+            }
 
         } catch (Exception e) {
-            System.out.println("Error al eliminar producto: " + e.getMessage());
+
+            throw new RuntimeException(
+                "Error al consultar productos: " + e.getMessage(), e
+            );
         }
+
+        return productos;
     }
 }
