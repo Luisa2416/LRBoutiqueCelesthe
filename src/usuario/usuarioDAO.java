@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 
 public class UsuarioDAO {
 
+    // Registra un nuevo usuario en la base de datos.
     public void registrarUsuario(String nombre, String correo, String password) {
         String sql = "INSERT INTO usuario (nombre, correo, password) VALUES (?, ?, ?)";
 
@@ -30,6 +31,7 @@ public class UsuarioDAO {
         }
     }
 
+    // Consulta todos los usuarios registrados.
     public void consultarUsuarios() {
         String sql = "SELECT * FROM usuario";
 
@@ -55,6 +57,7 @@ public class UsuarioDAO {
         }
     }
 
+    // Actualiza los datos básicos de un usuario.
     public void actualizarUsuario(int idUsuario, String nombre, String correo) {
         String sql = "UPDATE usuario SET nombre = ?, correo = ? WHERE id_usuario = ?";
 
@@ -78,6 +81,7 @@ public class UsuarioDAO {
         }
     }
 
+    // Elimina un usuario mediante su identificador.
     public void eliminarUsuario(int idUsuario) {
         String sql = "DELETE FROM usuario WHERE id_usuario = ?";
 
@@ -96,6 +100,35 @@ public class UsuarioDAO {
 
         } catch (Exception e) {
             System.out.println("Error al eliminar usuario: " + e.getMessage());
+        }
+    }
+
+    // Verifica si existe un usuario con el correo y contraseña recibidos.
+    // Retorna true si la autenticación es correcta y false si no coincide.
+    public boolean autenticarUsuario(String correo, String password) {
+
+        String sql = "SELECT * FROM usuario WHERE correo = ? AND password = ?";
+
+        try {
+            Connection conexion = Conexion.conectar();
+            PreparedStatement sentencia = conexion.prepareStatement(sql);
+
+            sentencia.setString(1, correo);
+            sentencia.setString(2, password);
+
+            ResultSet resultado = sentencia.executeQuery();
+
+            boolean autenticado = resultado.next();
+
+            resultado.close();
+            sentencia.close();
+            conexion.close();
+
+            return autenticado;
+
+        } catch (Exception e) {
+            System.out.println("Error al autenticar usuario: " + e.getMessage());
+            return false;
         }
     }
 }

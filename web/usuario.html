@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Usuarios - LR Boutique Celesthe</title>
+</head>
+
+<body>
+
+    <h1>LR Boutique Celesthe</h1>
+
+    <h2>Registro de usuario</h2>
+
+    <!-- Formulario utilizado para registrar un nuevo usuario. -->
+    <form action="usuario" method="post">
+
+        <input type="hidden" name="accion" value="registrar">
+
+        <label>Nombre:</label>
+        <input type="text" name="nombre" required>
+        <br><br>
+
+        <label>Correo:</label>
+        <input type="email" name="correo" required>
+        <br><br>
+
+        <label>Contraseña:</label>
+        <input type="password" name="password" required>
+        <br><br>
+
+        <button type="submit">Registrar usuario</button>
+
+    </form>
+
+    <hr>
+
+    <h2>Inicio de sesión</h2>
+
+    <!-- Formulario utilizado para comprobar la autenticación. -->
+    <form action="usuario" method="post">
+
+        <input type="hidden" name="accion" value="login">
+
+        <label>Correo:</label>
+        <input type="email" name="correo" required>
+        <br><br>
+
+        <label>Contraseña:</label>
+        <input type="password" name="password" required>
+        <br><br>
+
+        <button type="submit">Iniciar sesión</button>
+
+    </form>
+
+</body>
+
+</html>
